@@ -1,53 +1,308 @@
-/* 
- * Arquivo: main.c
- * Descrição: Programa cliente de demonstração interativa[cite: 1].
- * Conteúdo planeado:
- * - Inclusão exclusiva de "personagem.h" (sem acessos diretos às structs internas)[cite: 1].
- * - Laço de repetição com o menu de opções (1 a 10, e 0 para sair)[cite: 1].
- * - Captura segura de entrada textual do utilizador (evitando gets para prevenir estouro de buffer) e tratamento das mensagens de retorno[cite: 1].
- */
-
- /*
- ESTRUTURA BASICA DO MAIN:
-
- #include <stdio.h>
+#include <stdio.h>
+#include <string.h>
 #include "personagem.h"
 
-int main() {
-    CadastroPersonagens meuCadastro;
-    // Função hipotética para garantir que a quantidade comece em 0
-    inicializarCadastro(&meuCadastro); 
+void limparBuffer()
+{
+    int c;
 
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
+
+void cadastrar()
+{
+    printf("\n=== CADASTRO DE PERSONAGEM ===\n");
+}
+
+void menuPrincipal()
+{
+    printf("\n===============================\n");
+    printf("       SISTEMA DE RPG\n");
+    printf("===============================\n");
+    printf("1 - Cadastrar personagem\n");
+    printf("2 - Consultar personagem por ID\n");
+    printf("3 - Alterar personagem\n");
+    printf("4 - Remover personagem\n");
+    printf("5 - Listar personagens\n");
+    printf("6 - Administrar inventario\n");
+    printf("7 - Consultar equipamentos\n");
+    printf("8 - Equipar item\n");
+    printf("9 - Desequipar item\n");
+    printf("10 - Exibir atributos totais\n");
+    printf("0 - Encerrar\n");
+    printf("===============================\n");
+    printf("Opcao: ");
+}
+
+int main()
+{
+    CadastroPersonagens cadastro;
     int opcao;
-    do {
-        // Exibir menu de 1 a 10 e 0 para encerrar
-        printf("1 - Cadastrar personagem\n");
-        // ...
-        printf("0 - Encerrar\n");
-        scanf("%d", &opcao);
-        
-        if (opcao == 1) {
-            Personagem novo;
-            // Aqui você lê os dados digitados pelo utilizador para a variável 'novo'
-            
-            // Chama a função passando o endereço do cadastro
-            Estado resultado = cadastrarPersonagem(&meuCadastro, novo);
-            
-            // O main apenas reage ao código de retorno
-            if (resultado == SUCESSO) {
-                printf("Aventureiro registado com sucesso!\n");
-            } else if (resultado == CADASTRO_CHEIO) {
-                printf("Erro: Limite de aventureiros atingido.\n");
-            } else if (resultado == ID_DUPLICADO) {
-                printf("Erro: Este ID já existe.\n");
-            }
+
+    inicializarCadastro(&cadastro);
+
+    do
+    {
+        menuPrincipal();
+
+        if (scanf("%d", &opcao) != 1)
+        {
+            printf("Opcao invalida.\n");
+            limparBuffer();
+            continue;
         }
-        // ... outras opções
-        
+
+        limparBuffer();
+
+        switch (opcao)
+        {
+        case 1:
+        {
+            int opcaoRaca, opcaoClasse;
+            Personagem novo;
+
+            printf("\n=== CADASTRAR PERSONAGEM ===\n");
+
+            printf("ID: ");
+            scanf("%d", &novo.id);
+            limparBuffer();
+
+            printf("Nome: ");
+            fgets(novo.nome, sizeof(novo.nome), stdin);
+            novo.nome[strcspn(novo.nome, "\n")] = '\0';
+
+            printf("\nRaca:\n");
+            printf("0 - Humano\n");
+            printf("1 - Elfo\n");
+            printf("2 - Anao\n");
+            printf("3 - Halfling\n");
+            printf("Opcao: ");
+
+            scanf("%d", &opcaoRaca);
+
+            novo.raca = (Raca)(opcaoRaca - 1);
+
+
+            printf("\nClasse:\n");
+            printf("0 - Guerreiro\n");
+            printf("1 - Ladino\n");
+            printf("2 - Mago\n");
+            printf("3 - Clerigo\n");
+            printf("4 - Bardo\n");
+            printf("Opcao: ");
+
+            scanf("%d", &opcaoClasse);
+
+            novo.raca = (Classe)(opcaoClasse - 1);
+
+
+            printf("\nNivel: ");
+            scanf("%d", &novo.nivel);
+
+            printf("Pontos de vida maximos: ");
+            scanf("%d", &novo.vidaMaxima);
+
+            printf("Pontos de vida atuais: ");
+            scanf("%d", &novo.hp);
+
+            printf("Ataque: ");
+            scanf("%d", &novo.ataque);
+
+            printf("Defesa: ");
+            scanf("%d", &novo.defesa);
+
+            printf("Iniciativa: ");
+            scanf("%d", &novo.iniciativa);
+
+            printf("Poder: ");
+            scanf("%d", &novo.poder);
+
+            limparBuffer();
+
+            Estado resultado = cadastrarPersonagem(&cadastro, novo);
+
+            switch (resultado)
+            {
+            case SUCESSO:
+                printf("\nPersonagem cadastrado com sucesso!\n");
+                break;
+
+            case CADASTRO_CHEIO:
+                printf("\nErro: cadastro cheio.\n");
+                break;
+
+            case ID_DUPLICADO:
+                printf("\nErro: este ID ja esta cadastrado.\n");
+                break;
+
+            case DADOS_INVALIDOS:
+                printf("\nErro: dados invalidos.\n");
+                break;
+
+            default:
+                printf("\nErro desconhecido.\n");
+            }
+
+            break;
+        }
+
+        case 2:
+        {
+            int id;
+
+            printf("\n=== CONSULTAR PERSONAGEM ===\n");
+            printf("ID: ");
+            scanf("%d", &id);
+            limparBuffer();
+
+            Personagem *p = buscarPersonagem(&cadastro, id);
+
+            if (p == NULL)
+            {
+                printf("Personagem nao encontrado.\n");
+            }
+            else
+            {
+                printf("\nID: %d\n", p->id);
+                printf("Nome: %s\n", p->nome);
+                printf("Raca: %s\n", nomeRaca(p->raca));
+                printf("Classe: %s\n", nomeClasse(p->classe));
+                printf("Nivel: %d\n", p->nivel);
+                printf("PV: %d/%d\n", p->hp, p->vidaMaxima);
+                printf("Ataque: %d\n", p->ataque);
+                printf("Defesa: %d\n", p->defesa);
+                printf("Iniciativa: %d\n", p->iniciativa);
+                printf("Poder: %d\n", p->poder);
+            }
+
+            break;
+        }
+
+        case 3:
+        {
+            int id;
+
+            printf("\n=== ALTERAR PERSONAGEM ===\n");
+            printf("ID do personagem: ");
+            scanf("%d", &id);
+            limparBuffer();
+
+            Personagem *existente = buscarPersonagem(&cadastro, id);
+
+            if (existente == NULL)
+            {
+                printf("Personagem nao encontrado.\n");
+                break;
+            }
+
+            Personagem novo = *existente;
+
+            printf("Novo nome: ");
+            fgets(novo.nome, sizeof(novo.nome), stdin);
+            novo.nome[strcspn(novo.nome, "\n")] = '\0';
+
+            printf("Nova raca (0-Humano, 1-Elfo, 2-Anao, 3-Halfling): ");
+            scanf("%d", (int *)&novo.raca);
+
+            printf("Nova classe (0-Guerreiro, 1-Ladino, 2-Mago, 3-Clerigo, 4-Bardo): ");
+            scanf("%d", (int *)&novo.classe);
+
+            printf("Novo nivel: ");
+            scanf("%d", &novo.nivel);
+
+            printf("Novos PV maximos: ");
+            scanf("%d", &novo.vidaMaxima);
+
+            printf("Novos PV atuais: ");
+            scanf("%d", &novo.hp);
+
+            printf("Novo ataque: ");
+            scanf("%d", &novo.ataque);
+
+            printf("Nova defesa: ");
+            scanf("%d", &novo.defesa);
+
+            printf("Nova iniciativa: ");
+            scanf("%d", &novo.iniciativa);
+
+            printf("Novo poder: ");
+            scanf("%d", &novo.poder);
+
+            limparBuffer();
+
+            Estado resultado = alterarPersonagem(&cadastro, id, novo);
+
+            if (resultado == SUCESSO)
+                printf("Personagem alterado com sucesso!\n");
+            else if (resultado == ID_DUPLICADO)
+                printf("Erro: ID duplicado.\n");
+            else if (resultado == DADOS_INVALIDOS)
+                printf("Erro: dados invalidos.\n");
+            else
+                printf("Personagem nao encontrado.\n");
+
+            break;
+        }
+
+        case 4:
+        {
+            int id;
+
+            printf("\n=== REMOVER PERSONAGEM ===\n");
+            printf("ID: ");
+            scanf("%d", &id);
+            limparBuffer();
+
+            Estado resultado = removerPersonagem(&cadastro, id);
+
+            if (resultado == SUCESSO)
+                printf("Personagem removido com sucesso!\n");
+            else
+                printf("Personagem nao encontrado.\n");
+
+            break;
+        }
+
+        case 5:
+            printf("\n=== PERSONAGENS CADASTRADOS ===\n");
+            listarPersonagens(&cadastro);
+            break;
+
+        case 6:
+            printf("\nAdministracao de inventario.\n");
+            printf("Modulo ainda nao implementado.\n");
+            break;
+
+        case 7:
+            printf("\nConsulta de equipamentos.\n");
+            printf("Modulo ainda nao implementado.\n");
+            break;
+
+        case 8:
+            printf("\nEquipar item.\n");
+            printf("Modulo ainda nao implementado.\n");
+            break;
+
+        case 9:
+            printf("\nDesequipar item.\n");
+            printf("Modulo ainda nao implementado.\n");
+            break;
+
+        case 10:
+            printf("\nAtributos totais.\n");
+            printf("Modulo ainda nao implementado.\n");
+            break;
+
+        case 0:
+            printf("\nEncerrando programa...\n");
+            break;
+
+        default:
+            printf("\nOpcao invalida.\n");
+        }
+
     } while (opcao != 0);
 
     return 0;
 }
- 
- 
- */
