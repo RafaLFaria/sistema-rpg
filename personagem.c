@@ -11,55 +11,9 @@
 #include <string.h>
 #include <stddef.h> //contém null, ele é importante pra n dar bizil na busca de personagem
 #include "personagem.h"
+#include "inventario.h"
 
-#define CAPACIDADE_MAX 20
 
-typedef enum
-{
-    HUMANO, //0
-    ELFO, //1
-    ANAO, //2
-    HALFLING //3
-} Raca;
-
-typedef enum
-{
-    GUERREIRO,
-    LADINO,
-    MAGO,
-    CLERIGO,
-    BARDO
-} Classe;
-
-typedef enum
-{
-    SUCESSO,
-    CADASTRO_CHEIO,
-    ID_DUPLICADO,
-    DADOS_INVALIDOS,
-    NAO_ENCONTRADO
-} Estado;
-
-typedef struct
-{
-    int id; // usar static id para autoincrementar
-    char nome[50];
-    Raca raca;
-    Classe classe;
-    int nivel;
-    int vidaMaxima;
-    int hp;
-    int ataque;
-    int defesa;
-    int iniciativa;
-    int poder;
-} Personagem;
-
-typedef struct
-{
-    Personagem fichas[CAPACIDADE_MAX];
-    int quantidade;
-} CadastroPersonagens;
 
 void inicializarCadastro(CadastroPersonagens *cadastro)
 {
