@@ -20,11 +20,12 @@ typedef enum {
     ID_DUPLICADO,
     NAO_ENCONTRADO,
     DADOS_INVALIDOS,
+    JA_EQUIPADO,
     INVENTARIO_SEM_ESPACO,
     ITEM_INCOMPATIVEL,
     ITEM_NAO_ENCONTRADO,
     CONFLITO_DUAS_MAOS
-} EstadoOperacao;
+} Estado;
 
 typedef struct {
     Item itens[CAPACIDADE_INVENTARIO];
@@ -35,8 +36,8 @@ typedef struct {
 void inicializarInventario(Inventario *inv);
 int calcularOcupacaoInventario(const Inventario *inv);
 int buscarIndiceItem(const Inventario *inv, int idItem);
-EstadoOperacao buscarItemPorId(const Inventario *inv, int idItem, Item *itemEncontrado);
-EstadoOperacao adicionarItemInventario(Inventario *inv, Item novoItem);
-EstadoOperacao removerItemInventario(Inventario *inv, int idItem);
+Estado buscarItemPorId(const Inventario *inv, int idItem, Item *itemEncontrado);
+Estado adicionarItemInventario(Inventario *inv, Item novoItem);
+Estado removerItemInventario(Inventario *inv, int idItem);
 
 #endif

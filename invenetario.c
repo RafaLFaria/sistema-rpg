@@ -9,20 +9,11 @@
 
 #include <stddef.h>
 #include "item.h"
+#include "inventario.h"
 
 #define CAPACIDADE_INVENTARIO 50
 
-typedef enum {
-    SUCESSO,
-    CADASTRO_CHEIO,
-    ID_DUPLICADO,
-    NAO_ENCONTRADO,
-    DADOS_INVALIDOS,
-    INVENTARIO_SEM_ESPACO,
-    ITEM_INCOMPATIVEL,
-    ITEM_NAO_ENCONTRADO,
-    CONFLITO_DUAS_MAOS
-} EstadoOperacao;
+
 
 typedef struct {
     Item itens[CAPACIDADE_INVENTARIO];
@@ -55,8 +46,15 @@ int buscarIndiceItem(const Inventario *inv, int idItem) {
     return -1; // Não achou
 }
 
+Item *buscarItemInventario(Inventario *inv, int idItem){
+    int idx = buscarIndiceItem(inv, idItem);
 
-EstadoOperacao buscarItemPorId(const Inventario *inv, int idItem, Item *itemEncontrado) { //usa ponteiro para conseguir retornar o item e o estado
+    if(idx == -1) return NULL;
+    
+    return &inv->itens[idx];
+}
+
+Estado buscarItemPorId(const Inventario *inv, int idItem, Item *itemEncontrado) { //usa ponteiro para conseguir retornar o item e o estado
     int indice = buscarIndiceItem(inv, idItem);
     if (indice == -1) {
         return ITEM_NAO_ENCONTRADO;
@@ -68,7 +66,7 @@ EstadoOperacao buscarItemPorId(const Inventario *inv, int idItem, Item *itemEnco
 }
 
 
-EstadoOperacao adicionarItemInventario(Inventario *inv, Item novoItem) {
+Estado adicionarItemInventario(Inventario *inv, Item novoItem) {
     
     if (!itemValido(novoItem)) {
         return DADOS_INVALIDOS;
@@ -93,7 +91,7 @@ EstadoOperacao adicionarItemInventario(Inventario *inv, Item novoItem) {
 }
 
 // 6. Remover Item: exclui e puxa os elementos da frente para trás
-EstadoOperacao removerItemInventario(Inventario *inv, int idItem) {
+Estado removerItemInventario(Inventario *inv, int idItem) {
     int indice = buscarIndiceItem(inv, idItem);
     
     if (indice == -1) {
@@ -107,4 +105,24 @@ EstadoOperacao removerItemInventario(Inventario *inv, int idItem) {
 
     inv->quantidade--;
     return SUCESSO;
+}
+
+void listarInventario(const Inventario *inv){
+    int ocupados = calcularOcupacaoInventario(inv);
+
+    printf("\n--- inventario (Ocupacao: %d/%d)---\n", ocupados, CAPACIDADE_INVENTARIO);
+
+    if(inv->quantidade == 0){
+        printf("inventario vazio\n");
+    return;
+    }
+
+    for (int i = 0; i < inv->quantidade; i++)
+    {
+        Item it = inv-> itens[i];
+        printf("[ID: %d] %s (%s) | Espacos: %d | Bonus -> ATQ: %+d DEF:%+d PV:%+d INI:%+d POD:%+d\n",
+        it.id, it.nome, nomeTipoItem(it.tipo), it.espacos, it.bonusAtaque, it.bonusDefesa, it.bonusVida, it.bonusIniciativa, it.poder);
+    }
+    
+
 }

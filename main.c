@@ -81,7 +81,7 @@ int main()
 
             scanf("%d", &opcaoRaca);
 
-            novo.raca = (Raca)(opcaoRaca - 1);
+            novo.raca = (Raca)(opcaoRaca);
 
 
             printf("\nClasse:\n");
@@ -94,7 +94,7 @@ int main()
 
             scanf("%d", &opcaoClasse);
 
-            novo.raca = (Classe)(opcaoClasse - 1);
+            novo.classe = (Classe)(opcaoClasse);
 
 
             printf("\nNivel: ");
@@ -275,24 +275,90 @@ int main()
             break;
 
         case 7:
-            printf("\nConsulta de equipamentos.\n");
-            printf("Modulo ainda nao implementado.\n");
+        {
+            int id;
+            printf("\n=== CONSULTAR EQUIPAMENTOS ===\n");
+            printf("ID do personagem: ");
+            scanf("%d", &id);
+            limparBuffer();
+
+            if (consultarEquipamentos(&cadastro, id) == NAO_ENCONTRADO)
+            {
+                printf("Personagem nao encontrado.\n");
+            }
             break;
+        }
 
         case 8:
-            printf("\nEquipar item.\n");
-            printf("Modulo ainda nao implementado.\n");
+        {
+            int idPers, idItem;
+            printf("\n=== EQUIPAR ITEM ===\n");
+            printf("ID do personagem: ");
+            scanf("%d", &idPers);
+            printf("ID do item na mochila: ");
+            scanf("%d", &idItem);
+            limparBuffer();
+
+            Estado res = equiparItem(&cadastro, idPers, idItem);
+
+            if (res == SUCESSO)
+                printf("Item equipado com sucesso!\n");
+            else if (res == NAO_ENCONTRADO)
+                printf("Erro: Personagem nao encontrado.\n");
+            else if (res == ITEM_NAO_ENCONTRADO)
+                printf("Erro: Item nao encontrado na mochila.\n");
+            else if (res == CONFLITO_DUAS_MAOS)
+                printf("Erro: Conflito com arma de duas maos (maos ocupadas)!\n");
+            else if (res == INVENTARIO_SEM_ESPACO)
+                printf("Erro: Sem espaco na mochila para guardar o item trocado!\n");
+            else if (res == JA_EQUIPADO)
+                printf("Erro: Posicao (ou ambas as maos) ja ocupada!\n");
+            else
+                printf("Erro: Item incompativel ou dados invalidos.\n");
+
             break;
+        }
 
         case 9:
-            printf("\nDesequipar item.\n");
-            printf("Modulo ainda nao implementado.\n");
+        {
+            int idPers, idItem;
+            printf("\n=== DESEQUIPAR ITEM ===\n");
+            printf("ID do personagem: ");
+            scanf("%d", &idPers);
+            printf("ID do item equipado: ");
+            scanf("%d", &idItem);
+            limparBuffer();
+
+            Estado res = desequiparItem(&cadastro, idPers, idItem);
+
+            if (res == SUCESSO)
+                printf("Item desequipado e devolvido a mochila!\n");
+            else if (res == NAO_ENCONTRADO)
+                printf("Erro: Personagem nao encontrado.\n");
+            else if (res == ITEM_NAO_ENCONTRADO)
+                printf("Erro: Este item nao esta equipado no personagem.\n");
+            else if (res == INVENTARIO_SEM_ESPACO)
+                printf("Erro: Inventario sem espaco livre suficiente para desequipar!\n");
+            else
+                printf("Erro ao desequipar item.\n");
+
             break;
+        }
 
         case 10:
-            printf("\nAtributos totais.\n");
-            printf("Modulo ainda nao implementado.\n");
+        {
+            int id;
+            printf("\n=== ATRIBUTOS TOTAIS ===\n");
+            printf("ID do personagem: ");
+            scanf("%d", &id);
+            limparBuffer();
+
+            if (exibirAtributosTotais(&cadastro, id) == NAO_ENCONTRADO)
+            {
+                printf("Personagem nao encontrado.\n");
+            }
             break;
+        }
 
         case 0:
             printf("\nEncerrando programa...\n");
