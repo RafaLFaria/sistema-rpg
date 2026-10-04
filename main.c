@@ -77,6 +77,7 @@ int main()
             printf("1 - Elfo\n");
             printf("2 - Anao\n");
             printf("3 - Halfling\n");
+            printf("4 - Orc\n");
             printf("Opcao: ");
 
             scanf("%d", &opcaoRaca);
