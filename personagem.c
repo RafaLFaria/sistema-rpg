@@ -31,7 +31,7 @@ static int personagemValido(Personagem personagem)
     if (strlen(personagem.nome) == 0 || strlen(personagem.nome) >= 50)
         return 0;
 
-    if (personagem.raca < HUMANO || personagem.raca > HALFLING)
+    if (personagem.raca < HUMANO || personagem.raca > ORC)
         return 0;
 
     if (personagem.classe < GUERREIRO || personagem.classe > BARDO)
@@ -172,6 +172,8 @@ const char *nomeRaca(Raca raca)
         return "Anao";
     case HALFLING:
         return "Halfling";
+    case ORC:
+        return "Orc"; //traducao da nova raca (casos minimos de teste: usar classe ou raca adicional implementada)
     default:
         return "Desconhecida";
     }
@@ -226,7 +228,7 @@ const char *nomePosicaoEquipamento(int slot)
     }
 }
 
-// olha que coisa linda
+// olha que coisa linda, realmente lindo
 void listarPersonagens(const CadastroPersonagens *cadastro)
 {
     if (cadastro->quantidade == 0)

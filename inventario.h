@@ -39,5 +39,6 @@ int buscarIndiceItem(const Inventario *inv, int idItem);
 Estado buscarItemPorId(const Inventario *inv, int idItem, Item *itemEncontrado);
 Estado adicionarItemInventario(Inventario *inv, Item novoItem);
 Estado removerItemInventario(Inventario *inv, int idItem);
+Item *buscarItemInventario(Inventario *inv, int idItem);
 
 #endif

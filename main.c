@@ -270,9 +270,111 @@ int main()
             break;
 
         case 6:
-            printf("\nAdministracao de inventario.\n");
-            printf("Modulo ainda nao implementado.\n");
+        {
+            int idPers;
+            printf("\n=== ADMINISTRAR INVENTARIO ===\n");
+            printf("ID do personagem: ");
+            scanf("%d", &idPers);
+            limparBuffer();
+
+            Personagem *p = buscarPersonagem(&cadastro, idPers);
+            if (p == NULL)
+            {
+                printf("Erro: Personagem nao encontrado.\n");
+                break;
+            }
+
+            int subOpcao;
+            do
+            {
+                printf("\n--- MOCHILA DE %s (Ocupacao: %d/50) ---\n", p->nome, calcularOcupacaoInventario(&p->inv));
+                printf("1 - Listar itens da mochila\n");
+                printf("2 - Adicionar item\n");
+                printf("3 - Remover item da mochila\n");
+                printf("0 - Voltar ao menu principal\n");
+                printf("Opcao: ");
+                scanf("%d", &subOpcao);
+                limparBuffer();
+
+                if (subOpcao == 1)
+                {
+                    listarInventario(&p->inv);
+                }
+                else if (subOpcao == 2)
+                {
+                    Item novo;
+                    printf("ID do item: ");
+                    scanf("%d", &novo.id);
+                    limparBuffer();
+
+                    printf("Nome do item: ");
+                    fgets(novo.nome, sizeof(novo.nome), stdin);
+                    novo.nome[strcspn(novo.nome, "\n")] = '\0';
+
+                    printf("Tipo (0-Elmo, 1-Peitoral, 2-Manoplas, 3-Calca, 4-Botas, 5-Anel, 6-Colar, 7-Cinto, 8-Arma 1 Mao, 9-Arma 2 Maos): ");
+                    int tipoInt;
+                    scanf("%d", &tipoInt);
+                    novo.tipo = (TipoItem)tipoInt;
+
+                    printf("Espacos consumidos (1 a 50): ");
+                    scanf("%d", &novo.espacos);
+
+                    printf("Bonus Ataque: ");
+                    scanf("%d", &novo.bonusAtaque);
+                    printf("Bonus Defesa: ");
+                    scanf("%d", &novo.bonusDefesa);
+                    printf("Bonus Vida: ");
+                    scanf("%d", &novo.bonusVida);
+                    printf("Bonus Iniciativa: ");
+                    scanf("%d", &novo.bonusIniciativa);
+                    printf("Poder: ");
+                    scanf("%d", &novo.poder);
+                    limparBuffer();
+
+                    Estado res = adicionarItemInventario(&p->inv, novo);
+                    if (res == SUCESSO)
+                    {
+                        printf("Item adicionado a mochila com sucesso!\n");
+                    }
+                    else if (res == DADOS_INVALIDOS)
+                    {
+                        printf("Erro: Dados invalidos (verifique se os espacos estao entre 1 e 50).\n");
+                    }
+                    else if (res == ID_DUPLICADO)
+                    {
+                        printf("Erro: Ja existe um item com este ID na mochila.\n");
+                    }
+                    else if (res == INVENTARIO_SEM_ESPACO)
+                    {
+                        printf("Erro: Inventario sem espaco suficiente (Ultrapassaria 50 espacos)!\n");
+                    }
+                    else
+                    {
+                        printf("Erro ao adicionar item.\n");
+                    }
+                }
+                else if (subOpcao == 3)
+                {
+                    int idItemRem;
+                    printf("ID do item a remover: ");
+                    scanf("%d", &idItemRem);
+                    limparBuffer();
+
+                    Estado res = removerItemInventario(&p->inv, idItemRem);
+                    if (res == SUCESSO)
+                    {
+                        printf("Item removido com sucesso!\n");
+                    }
+                    else
+                    {
+                        printf("Erro: Item nao encontrado na mochila.\n");
+                    }
+                }
+
+            } while (subOpcao != 0);
+
             break;
+        }
 
         case 7:
         {

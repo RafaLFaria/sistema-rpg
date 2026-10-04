@@ -8,6 +8,7 @@
  */
 
 #include <stddef.h>
+#include <stdio.h>
 #include "item.h"
 #include "inventario.h"
 
@@ -15,10 +16,13 @@
 
 
 
+/*
+COMENTEI PARA TESTAR, PQ O TERMINAL APONTOU ERRO POR ELA ESTAR REPETIDA AQUI, MAS ELA JA ESTA NO inventario.h, ENTAO NAO PRECISA AQUI
+
 typedef struct {
     Item itens[CAPACIDADE_INVENTARIO];
     int quantidade;
-} Inventario;
+} Inventario;*/
 
 
 void inicializarInventario(Inventario *inv){
